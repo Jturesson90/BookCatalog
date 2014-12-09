@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+    <item android:id="@+id/action_authorSort" android:title="@string/sort_author"
+        android:orderInCategory="100" android:showAsAction="never" />
+    <item android:id="@+id/action_titleSort" android:title="@string/sort_title"
+        android:orderInCategory="100" android:showAsAction="never" />
+    <!--<item android:id="@+id/action_dateSort" android:title="@string/sort_date"
+        android:orderInCategory="100" android:showAsAction="never" /> -->
+    <item android:id="@+id/action_priceSort" android:title="@string/sort_price"
+        android:orderInCategory="100" android:showAsAction="never" />
+
+</menu>
