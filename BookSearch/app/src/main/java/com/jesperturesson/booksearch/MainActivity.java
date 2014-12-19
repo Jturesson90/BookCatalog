@@ -54,6 +54,76 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initAnimations();
+        init();
+        fetchJsonFile();
+
+    }
+
+    private void fetchJsonFile() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                connectionIsFine = false;
+                ServerConnection connection = new ServerConnection();
+                JsonParser parser = new JsonParser();
+                if (connection
+                        .jsonGet(getString(R.string.url), parser)) {
+                    connectionIsFine = true;
+                }
+                if (connectionIsFine) {
+                    catalog = new Catalog(parser.getRoot());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            pushToAdapter(catalog);
+                            progressDialog.dismiss();
+                            enterScene(mainScene);
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            enterScene(mainScene);
+                            Toast.makeText(getApplicationContext(), R.string.network_failed, Toast.LENGTH_LONG).show();
+
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
+    private void pushToAdapter(Catalog catalog) {
+        bookAdapter = new BookAdapter(getApplication().getApplicationContext());
+        listView.setAdapter(bookAdapter);
+        for (Book book : catalog.getBooks()) {
+            bookAdapter.add(book);
+        }
+        bookAdapter.notifyDataSetChanged();
+    }
+
+    private void init() {
+        rootContainer = (ViewGroup) findViewById(R.id.root_container);
+        detailView = getLayoutInflater().inflate(R.layout.activity_detail_actvity, rootContainer, false);
+        mainView = getLayoutInflater().inflate(R.layout.activity_main, rootContainer, false);
+        mainScene = new Scene(rootContainer, (ViewGroup) mainView);
+        detailScene = new Scene(rootContainer, (ViewGroup) detailView);
+        progressDialog = ProgressDialog.show(MainActivity.this, getString(R.string.download_header), getString(R.string.download_text), true);
+        listView = (ListView) mainView.findViewById(R.id.list);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Book book = (Book) parent.getItemAtPosition(position);
+                selectedTextView = view;
+                setDetailViewInfo(book);
+            }
+        });
+    }
+
+    private void initAnimations() {
         fadeIn = new AlphaAnimation(0.0f, 1.0f);
         fadeIn.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
         fadeOut = new AlphaAnimation(1.0f, 0.0f);
@@ -86,62 +156,6 @@ public class MainActivity extends Activity {
 
             }
         });
-
-        rootContainer = (ViewGroup) findViewById(R.id.root_container);
-        detailView = getLayoutInflater().inflate(R.layout.activity_detail_actvity, rootContainer, false);
-        mainView = getLayoutInflater().inflate(R.layout.activity_main, rootContainer, false);
-        mainScene = new Scene(rootContainer, (ViewGroup) mainView);
-        detailScene = new Scene(rootContainer, (ViewGroup) detailView);
-        progressDialog = ProgressDialog.show(MainActivity.this, "Please wait ...", "Downloading Books ...", true);
-        listView = (ListView) mainView.findViewById(R.id.list);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Book book = (Book) parent.getItemAtPosition(position);
-                selectedTextView = view;
-                setDetailViewInfo(book);
-            }
-        });
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                connectionIsFine = false;
-                ServerConnection connection = new ServerConnection();
-                JsonParser parser = new JsonParser();
-                if (connection
-                        .jsonGet(getString(R.string.url), parser)) {
-                    connectionIsFine = true;
-                }
-                if (connectionIsFine) {
-                    catalog = new Catalog(parser.getRoot());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            bookAdapter = new BookAdapter(getApplication().getApplicationContext());
-                            listView.setAdapter(bookAdapter);
-                            for (Book book : catalog.getBooks()) {
-                                bookAdapter.add(book);
-                            }
-                            bookAdapter.notifyDataSetChanged();
-                            progressDialog.dismiss();
-                            enterScene(mainScene);
-                        }
-                    });
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            progressDialog.dismiss();
-                            enterScene(mainScene);
-                            Toast.makeText(getApplicationContext(), R.string.network_failed, Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                    });
-                }
-            }
-        }).start();
     }
 
     private void setDetailViewInfo(Book book) {

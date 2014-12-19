@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Bokkatalog</string>
+    <string name="sort_author">Sortera på Författare</string>
+    <string name="sort_title">Sortera på Titel</string>
+    <string name="sort_date">Sortera på Datum</string>
+    <string name="sort_price">Sortera på Pris</string>
+    <string name="action_settings">Inställningar</string>
+    <string name="network_failed">Kolla över ditt nätverk och försök igen</string>
+    <string name="download_header">Vänta...</string>
+    <string name="download_text">Laddar ner böcker...</string>
+
+</resources>
