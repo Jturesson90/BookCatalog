@@ -10,4 +10,8 @@ Shows an detailview when pressing on listitem.
 
 Features:
 Can sort the books on Price, Title and Author.
-Alpha animations
+Will sort in reversed order if sorting the same twice.
+
+Alpha animations.
+
+Languages: English, Swedish

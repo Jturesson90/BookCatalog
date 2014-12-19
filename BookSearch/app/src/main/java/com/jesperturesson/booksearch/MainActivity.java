@@ -106,6 +106,7 @@ public class MainActivity extends Activity {
     }
 
     private void init() {
+        
         rootContainer = (ViewGroup) findViewById(R.id.root_container);
         detailView = getLayoutInflater().inflate(R.layout.activity_detail_actvity, rootContainer, false);
         mainView = getLayoutInflater().inflate(R.layout.activity_main, rootContainer, false);
